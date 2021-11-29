@@ -1,3 +1,1 @@
-let test = () => console.log('yes');
-
-export default test;
+export { default as configureStore } from "./configure-store";
