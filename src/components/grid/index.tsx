@@ -5,28 +5,30 @@ import { AnyAction, Dispatch } from "redux";
 import { Block } from "./block";
 import { Container, Row } from "./styles";
 import { createGrid, fillBlock, IReducer, selectBlock } from "reducers";
-import { BLOCK_COORDS, INDEX, N, NUMBERS } from "typings";
+import { BLOCK_COORDS, GRID, INDEX, N, NUMBERS } from "typings";
 
 interface IState {
   selectedBlock?: BLOCK_COORDS;
   selectedValue: N;
+  solvedGrid?: GRID;
 }
 
 export const Grid: FC = () => {
   const state = useSelector<IReducer, IState>(
-    ({ selectedBlock, workingGrid }) => ({
+    ({ selectedBlock, solvedGrid, workingGrid }) => ({
       selectedBlock,
       selectedValue:
         workingGrid && selectedBlock
           ? workingGrid[selectedBlock[0]][selectedBlock[1]]
           : 0,
+      solvedGrid,
     })
   );
   const dispatch = useDispatch<Dispatch<AnyAction>>();
   const create = useCallback(() => dispatch(createGrid()), [dispatch]);
   useEffect(() => {
-    create();
-  }, [create]);
+    if (!state.solvedGrid) create();
+  }, [create, state.solvedGrid]);
 
   const fill = useCallback(
     (n: NUMBERS) => {
